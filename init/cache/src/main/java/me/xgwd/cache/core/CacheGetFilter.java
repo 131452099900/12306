@@ -15,25 +15,19 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.cache.core;
 
-import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+/**
+ * 缓存函数式接口
+ */
+@FunctionalInterface
+public interface CacheGetFilter<T> {
 
-import java.util.Optional;
-
-
-@Data
-public abstract class AbstractException extends RuntimeException {
-
-    public final String errorCode;
-
-    public final String errorMessage;
-
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
-    }
+    /**
+     * 缓存过滤
+     *
+     * @param param 输出参数
+     * @return {@code true} 如果输入参数匹配，否则 {@link Boolean#TRUE}
+     */
+    boolean filter(T param);
 }

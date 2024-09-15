@@ -15,25 +15,33 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.cache.properties;
 
 import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Optional;
-
-
+/**
+ * 缓存穿透布隆过滤器
+ * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ */
 @Data
-public abstract class AbstractException extends RuntimeException {
+@ConfigurationProperties(prefix = BloomFilterPenetrateProperties.PREFIX)
+public class BloomFilterPenetrateProperties {
 
-    public final String errorCode;
+    public static final String PREFIX = "cache.redis.bloom-filter";
 
-    public final String errorMessage;
+    /**
+     * 布隆过滤器默认实例名称
+     */
+    private String name = "cache_penetration_bloom_filter";
 
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
-    }
+    /**
+     * 每个元素的预期插入量
+     */
+    private Long expectedInsertions = 64L;
+
+    /**
+     * 预期错误概率
+     */
+    private Double falseProbability = 0.03D;
 }

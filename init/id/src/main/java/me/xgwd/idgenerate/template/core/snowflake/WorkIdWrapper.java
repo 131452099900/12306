@@ -15,25 +15,28 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.idgenerate.template.core.snowflake;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+import lombok.NoArgsConstructor;
 
-import java.util.Optional;
-
-
+/**
+ * WorkId 包装器
+ * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ */
 @Data
-public abstract class AbstractException extends RuntimeException {
+@NoArgsConstructor
+@AllArgsConstructor
+public class WorkIdWrapper {
 
-    public final String errorCode;
+    /**
+     * 工作ID
+     */
+    private Long workId;
 
-    public final String errorMessage;
-
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
-    }
+    /**
+     * 数据中心ID
+     */
+    private Long dataCenterId;
 }

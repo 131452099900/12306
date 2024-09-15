@@ -7,6 +7,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>init</module>
+        <module>service</module>
     </modules>
     <groupId>org.example</groupId>
     <artifactId>my12306</artifactId>
@@ -38,6 +39,20 @@
         <hippo4j-threadpool-config-mode.version>1.5.0</hippo4j-threadpool-config-mode.version>
         <micrometer-registry-prometheus.version>1.10.6</micrometer-registry-prometheus.version>
     </properties>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>

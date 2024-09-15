@@ -15,25 +15,17 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.cache.core;
 
-import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+/**
+ * 缓存加载器
+ * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ */
+@FunctionalInterface
+public interface CacheLoader<T> {
 
-import java.util.Optional;
-
-
-@Data
-public abstract class AbstractException extends RuntimeException {
-
-    public final String errorCode;
-
-    public final String errorMessage;
-
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
-    }
+    /**
+     * 加载缓存
+     */
+    T load();
 }

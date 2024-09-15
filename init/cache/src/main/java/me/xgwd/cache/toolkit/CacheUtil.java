@@ -15,25 +15,34 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.cache.toolkit;
 
-import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
+/**
+ * 缓存工具类 用来判空和拼接key而已
+ */
+public final class CacheUtil {
 
-@Data
-public abstract class AbstractException extends RuntimeException {
+    private static final String SPLICING_OPERATOR = "_";
 
-    public final String errorCode;
+    /**
+     * 构建缓存标识
+     */
+    public static String buildKey(String... keys) {
+        Stream.of(keys).forEach(each -> Optional.ofNullable(Strings.emptyToNull(each)).orElseThrow(() -> new RuntimeException("构建缓存 key 不允许为空")));
+        return Joiner.on(SPLICING_OPERATOR).join(keys);
+    }
 
-    public final String errorMessage;
-
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
+    /**
+     * 判断结果是否为空或空的字符串
+     */
+    public static boolean isNullOrBlank(Object cacheVal) {
+        return cacheVal == null || (cacheVal instanceof String && Strings.isNullOrEmpty((String) cacheVal));
     }
 }

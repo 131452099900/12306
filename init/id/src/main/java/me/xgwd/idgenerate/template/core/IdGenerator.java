@@ -15,25 +15,25 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.idgenerate.template.core;
 
-import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+/**
+ * ID 生成器
+ * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
+ */
+public interface IdGenerator {
 
-import java.util.Optional;
+    /**
+     * 下一个 ID
+     */
+    default long nextId() {
+        return 0L;
+    }
 
-
-@Data
-public abstract class AbstractException extends RuntimeException {
-
-    public final String errorCode;
-
-    public final String errorMessage;
-
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
+    /**
+     * 下一个 ID 字符串
+     */
+    default String nextIdStr() {
+        return "";
     }
 }

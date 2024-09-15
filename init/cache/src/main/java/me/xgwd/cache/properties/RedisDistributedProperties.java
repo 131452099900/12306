@@ -15,25 +15,39 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.cache.properties;
 
 import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
-
+/**
+ * 分布式缓存配置
+ */
 @Data
-public abstract class AbstractException extends RuntimeException {
+@ConfigurationProperties(prefix = RedisDistributedProperties.PREFIX)
+public class RedisDistributedProperties {
 
-    public final String errorCode;
+    public static final String PREFIX = "cache.redis";
 
-    public final String errorMessage;
+    /**
+     * Key 前缀
+     */
+    private String prefix = "";
 
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
-    }
+    /**
+     * Key 前缀字符集
+     */
+    private String prefixCharset = "UTF-8";
+
+    /**
+     * 默认超时时间
+     */
+    private Long valueTimeout = 30000L;
+
+    /**
+     * 时间单位
+     */
+    private TimeUnit valueTimeUnit = TimeUnit.MILLISECONDS;
 }

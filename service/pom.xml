@@ -9,16 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>init</artifactId>
+    <artifactId>service</artifactId>
 
-    <packaging>pom</packaging>
-    <modules>
-        <module>base</module>
-        <module>dao</module>
-        <module>common</module>
-        <module>id</module>
-        <module>cache</module>
-    </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

@@ -15,25 +15,16 @@
  * limitations under the License.
  */
 
-package me.xgwd.base.exception;
+package me.xgwd.cache.core;
 
-import lombok.Data;
-import me.xgwd.base.resp.IErrorCode;
-import org.springframework.util.StringUtils;
+/**
+ * 缓存处理空结果函数式接口 可用于处理缓存穿透问题
+ */
+@FunctionalInterface
+public interface CacheGetIfAbsent<T> {
 
-import java.util.Optional;
-
-
-@Data
-public abstract class AbstractException extends RuntimeException {
-
-    public final String errorCode;
-
-    public final String errorMessage;
-
-    public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
-    }
+    /**
+     * 如果查询结果为空，执行逻辑
+     */
+    void execute(T param);
 }
