@@ -36,8 +36,17 @@ import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public class StringRedisTemplateProxy implements DistributedCache {
-    /* 保证批量操作的putIfSent原子性 */
-    private static final String LUA_PUT_IF_ALL_ABSENT_SCRIPT_PATH = "lua/putIfAllAbsent.lua";
+    public static final String LUA_SCRIPT = "for i, v in ipairs(KEYS) do\n" +
+            "    if (redis.call('exists', v) == 1) then\n" +
+            "        return nil;\n" +
+            "    end\n" +
+            "end\n" +
+            "for i, v in ipairs(KEYS) do\n" +
+            "    redis.call('set', v, 'default');\n" +
+            "    redis.call('pexpire', v, ARGV[1]);\n" +
+            "end\n" +
+            "return true;";
+
     private static final String SAFE_GET_DISTRIBUTED_LOCK_KEY_PREFIX = "safe_get_distributed_lock_get:";
 
     private final StringRedisTemplate stringRedisTemplate;
@@ -61,13 +70,10 @@ public class StringRedisTemplateProxy implements DistributedCache {
 
     @Override
     public Boolean putIfAllAbsent(@NotNull Collection<String> keys) {
-        DefaultRedisScript<Boolean> actual = Singleton.get(LUA_PUT_IF_ALL_ABSENT_SCRIPT_PATH, () -> {
-            DefaultRedisScript redisScript = new DefaultRedisScript();
-            redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource(LUA_PUT_IF_ALL_ABSENT_SCRIPT_PATH)));
-            redisScript.setResultType(Boolean.class);
-            return redisScript;
-        });
-        Boolean result = stringRedisTemplate.execute(actual, Lists.newArrayList(keys), redisProperties.getValueTimeout().toString());
+        DefaultRedisScript<Boolean> script = new DefaultRedisScript<>();
+        script.setScriptText(LUA_SCRIPT);
+        script.setResultType(Boolean.class);
+        Boolean result = stringRedisTemplate.execute(script, Lists.newArrayList(keys), redisProperties.getValueTimeout().toString());
         return result != null && result;
     }
 
@@ -151,7 +157,9 @@ public class StringRedisTemplateProxy implements DistributedCache {
             // 双重判定锁，减轻获得分布式锁后线程访问数据库压力
             if (CacheUtil.isNullOrBlank(result = get(key, clazz))) {
                 // 如果访问 cacheLoader 加载数据为空，执行后置函数操作
+                // 当结果为null是操作
                 if (CacheUtil.isNullOrBlank(result = loadAndSet(key, cacheLoader, timeout, timeUnit, true, bloomFilter))) {
+                    // 如果查询结果为空，执行逻辑
                     Optional.ofNullable(cacheGetIfAbsent).ifPresent(each -> each.execute(key));
                 }
             }
@@ -200,7 +208,7 @@ public class StringRedisTemplateProxy implements DistributedCache {
     }
 
 
-    /* 当获取key为null时进行定制化 返回 */
+    /* 当获取key为null时进行定制化 返回  也就是当值为null是为解决缓存穿透问题把redis里面设置为null*/
     private <T> T loadAndSet(String key, CacheLoader<T> cacheLoader, long timeout, TimeUnit timeUnit, boolean safeFlag, RBloomFilter<String> bloomFilter) {
         T result = cacheLoader.load();
         if (CacheUtil.isNullOrBlank(result)) {

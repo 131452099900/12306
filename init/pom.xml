@@ -18,6 +18,9 @@
         <module>common</module>
         <module>id</module>
         <module>cache</module>
+        <module>auth</module>
+        <module>partten</module>
+        <module>log</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

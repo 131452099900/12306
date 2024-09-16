@@ -7,6 +7,7 @@ import me.xgwd.cache.core.CacheGetIfAbsent;
 import me.xgwd.cache.core.CacheLoader;
 import org.redisson.api.RBloomFilter;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,6 +18,12 @@ import java.util.concurrent.TimeUnit;
  * @Description:
  */
 public interface DistributedCache extends Cache{
+    Boolean putIfAllAbsent(@NotNull Collection<String> keys);
+
+    Boolean delete(String key);
+
+    Long delete(Collection<String> keys);
+
     /**
      * 获取缓存，如查询结果为空，调用 {@link CacheLoader} 加载缓存
      */
@@ -98,6 +105,8 @@ public interface DistributedCache extends Cache{
      * 通过此方式防止程序中可能出现的：缓存穿透、缓存击穿以及缓存雪崩场景，需要客户端传递布隆过滤器，适用于被外部直接调用的接口
      */
     void safePut(@NotBlank String key, Object value, long timeout, TimeUnit timeUnit, RBloomFilter<String> bloomFilter);
+
+    Boolean hasKey(String key);
 
     /**
      * 统计指定 key 的存在数量
