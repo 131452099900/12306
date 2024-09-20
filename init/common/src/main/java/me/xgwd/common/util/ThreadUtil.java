@@ -29,8 +29,12 @@ public final class ThreadUtil {
      *
      * @param millis 睡眠时间，单位毫秒
      */
-    @SneakyThrows(value = InterruptedException.class)
+//    @SneakyThrows(value = InterruptedException.class)
     public static void sleep(long millis) {
-        Thread.sleep(millis);
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

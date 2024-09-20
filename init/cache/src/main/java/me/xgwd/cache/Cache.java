@@ -1,6 +1,7 @@
 package me.xgwd.cache;
 
-import jakarta.validation.constraints.NotBlank;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * Created with IntelliJ IDEA.

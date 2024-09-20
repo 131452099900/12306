@@ -1,0 +1,22 @@
+
+dubbo:
+  application:
+    name: consum-service
+  registry:
+    address: nacos://192.168.10.12:8848
+    username: nacos
+    password: nacos
+  scan:
+    base-packages: me.xgwd.api.user
+  protocol:
+    name: dubbo
+    port: -1
+spring:
+  application:
+    name: user-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.12:8848
+        username: nacos
+        password: nacos

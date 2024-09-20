@@ -23,6 +23,8 @@
         <module>log</module>
         <module>Idempotent</module>
         <module>web</module>
+        <module>dubbo-parent</module>
+        <module>bean</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

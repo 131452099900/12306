@@ -1,12 +1,14 @@
 package me.xgwd.cache;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+//import jakarta.validation.constraints.NotBlank;
+//import jakarta.validation.constraints.NotNull;
 import me.xgwd.cache.core.CacheGetFilter;
 import me.xgwd.cache.core.CacheGetIfAbsent;
 import me.xgwd.cache.core.CacheLoader;
 import org.redisson.api.RBloomFilter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -112,4 +114,5 @@ public interface DistributedCache extends Cache{
      * 统计指定 key 的存在数量
      */
     Long countExistingKeys(@NotNull String... keys);
+    Object getInstance();
 }

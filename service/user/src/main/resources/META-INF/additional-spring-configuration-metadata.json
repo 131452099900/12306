@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "cache.redis.bloom-filter.enable",
+      "type": "java.lang.String",
+      "description": "Description for cache.redis.bloom-filter.enable."
+  }
+] }

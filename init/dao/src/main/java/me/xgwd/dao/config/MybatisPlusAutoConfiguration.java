@@ -41,4 +41,11 @@ public class MybatisPlusAutoConfiguration {
     public IdentifierGenerator idGenerator() {
         return new CustomIdGenerator();
     }
+
+
+//    @Bean
+//    public CustomDbHashModShardingAlgorithm customDbHashModShardingAlgorithm() {
+//        return new CustomDbHashModShardingAlgorithm();
+//
+//    }
 }

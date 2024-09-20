@@ -4,8 +4,8 @@ import cn.hutool.core.lang.Singleton;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+//import jakarta.validation.constraints.NotBlank;
+//import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import me.xgwd.cache.core.CacheGetFilter;
 import me.xgwd.cache.core.CacheGetIfAbsent;
@@ -21,6 +21,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -198,6 +200,7 @@ public class StringRedisTemplateProxy implements DistributedCache {
         return stringRedisTemplate.hasKey(key);
     }
 
+    @Override
     public Object getInstance() {
         return stringRedisTemplate;
     }

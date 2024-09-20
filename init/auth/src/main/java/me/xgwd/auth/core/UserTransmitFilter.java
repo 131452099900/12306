@@ -17,11 +17,11 @@
 
 package me.xgwd.auth.core;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
 import me.xgwd.base.config.constant.UserConstant;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
 

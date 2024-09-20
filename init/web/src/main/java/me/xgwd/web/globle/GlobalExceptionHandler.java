@@ -2,7 +2,7 @@ package me.xgwd.web.globle;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import jakarta.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.xgwd.base.exception.AbstractException;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
@@ -32,7 +33,7 @@ public class GlobalExceptionHandler {
     /**
      * 拦截参数验证异常
      */
-    @SneakyThrows
+//    @SneakyThrows
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public Result validExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
@@ -49,6 +50,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = {AbstractException.class})
     public Result abstractException(HttpServletRequest request, AbstractException ex) {
+        System.out.println("===================???>>>>AbstractException");
         if (ex.getCause() != null) {
             log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString(), ex.getCause());
             return Results.failure(ex);
@@ -62,6 +64,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Throwable.class)
     public Result defaultErrorHandler(HttpServletRequest request, Throwable throwable) {
+        System.out.println("===================???>>>>拦截未捕获异常");
         log.error("[{}] {} ", request.getMethod(), getUrl(request), throwable);
         return Results.failure();
     }
