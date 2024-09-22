@@ -18,6 +18,7 @@
 package me.xgwd.base.exception;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import me.xgwd.base.resp.IErrorCode;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 
 @Data
+@Accessors(chain = true)
 public abstract class AbstractException extends RuntimeException {
 
     public final String errorCode;

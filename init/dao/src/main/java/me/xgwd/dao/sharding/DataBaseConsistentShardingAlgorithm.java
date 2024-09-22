@@ -14,17 +14,25 @@ import java.util.Collection;
 @Component
 public class DataBaseConsistentShardingAlgorithm implements PreciseShardingAlgorithm<String>, RangeShardingAlgorithm<Long> {
 
-    // 简单路由分片
+
+    public static final int shardingCount = 32;
+    public static final int tableShardingCount = 16;
+
+    // 简单路由分片 不满16为0，满16为1
     @Override
     public String doSharding(Collection<String> collection, PreciseShardingValue<String> preciseShardingValue) {
-        int i = preciseShardingValue.getValue().hashCode();
-        ArrayList<String> availableTargetNameList = new ArrayList<>(collection);
-        int index = i % availableTargetNameList.size();
-        return availableTargetNameList.get(index);
+        int index = hashShardingValue(preciseShardingValue.getValue()) % shardingCount / tableShardingCount;
+        System.out.println("value is " + preciseShardingValue.getValue() + "hashCode is " + index + " and Index is " + index + " db");
+
+        return new ArrayList<>(collection).get(index);
     }
 
     @Override
     public Collection<String> doSharding(Collection<String> collection, RangeShardingValue<Long> rangeShardingValue) {
         return collection;
+    }
+
+    private int hashShardingValue(final Object shardingValue) {
+        return Math.abs( shardingValue.hashCode());
     }
 }

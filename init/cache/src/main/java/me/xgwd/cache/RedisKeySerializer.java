@@ -29,8 +29,8 @@ public class RedisKeySerializer implements InitializingBean, RedisSerializer<Str
 
     @Override
     public byte[] serialize(String s) throws SerializationException {
-        String realKey = keyPrefix.concat(keyPrefix);
-        return keyPrefix.getBytes(charset);
+        String realKey = keyPrefix.concat(s);
+        return realKey.getBytes(charset);
     }
 
     @Override

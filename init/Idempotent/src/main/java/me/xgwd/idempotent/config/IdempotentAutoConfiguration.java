@@ -12,6 +12,8 @@ import me.xgwd.cache.DistributedCache;
 import me.xgwd.idempotent.apsect.IdempotentAspect;
 import me.xgwd.idempotent.core.params.IdempotentParamService;
 import me.xgwd.idempotent.core.params.ParamHandler;
+import me.xgwd.idempotent.core.spel.IdempotentSpELByRestAPIExecuteHandler;
+import me.xgwd.idempotent.core.spel.IdempotentSpELService;
 import me.xgwd.idempotent.core.token.IdempotentTokenController;
 import me.xgwd.idempotent.core.token.IdempotentTokenExecuteHandler;
 import me.xgwd.idempotent.core.token.IdempotentTokenService;
@@ -66,11 +68,11 @@ public class IdempotentAutoConfiguration {
     /**
      * SpEL 方式幂等实现，基于 RestAPI 场景
      */
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public IdempotentSpELService idempotentSpELByRestAPIExecuteHandler(RedissonClient redissonClient) {
-//        return new IdempotentSpELByRestAPIExecuteHandler(redissonClient);
-//    }
+    @Bean
+    @ConditionalOnMissingBean
+    public IdempotentSpELService idempotentSpELByRestAPIExecuteHandler(RedissonClient redissonClient) {
+        return new IdempotentSpELByRestAPIExecuteHandler(redissonClient);
+    }
 //
 //    /**
 //     * SpEL 方式幂等实现，基于 MQ 场景

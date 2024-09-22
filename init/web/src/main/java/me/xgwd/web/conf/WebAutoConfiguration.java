@@ -1,5 +1,6 @@
 package me.xgwd.web.conf;
 
+import me.xgwd.web.filter.WebRequestFilter;
 import me.xgwd.web.globle.GlobalExceptionHandler;
 import me.xgwd.web.init.InitializeDispatcherServletController;
 import me.xgwd.web.init.InitializeDispatcherServletHandler;
@@ -44,5 +45,10 @@ public class WebAutoConfiguration {
     @Bean
     public InitializeDispatcherServletHandler initializeDispatcherServletHandler(RestTemplate simpleRestTemplate, ConfigurableEnvironment configurableEnvironment) {
         return new InitializeDispatcherServletHandler(simpleRestTemplate, configurableEnvironment);
+    }
+
+    @Bean
+    public WebRequestFilter webRequestFilter() {
+        return new WebRequestFilter();
     }
 }

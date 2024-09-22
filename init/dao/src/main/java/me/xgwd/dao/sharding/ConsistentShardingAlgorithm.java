@@ -29,18 +29,19 @@ public class ConsistentShardingAlgorithm
 
     /**
      * 精确分片
-     * 一致性hash算法
+     *
      */
     @Override
     public String doSharding(Collection<String> collection, PreciseShardingValue<String> preciseShardingValue) {
-        int i = preciseShardingValue.getValue().hashCode();
-
+        int i = hashShardingValue(preciseShardingValue.getValue());
         ArrayList<String> availableTargetNameList = new ArrayList<>(collection);
         int index = i % availableTargetNameList.size();
-        System.out.println("hashCode is " + i + " and Index is " + index);
+        System.out.println("value is " + preciseShardingValue.getValue() + "hashCode is " + i + " and Index is " + index + " tb");
         return availableTargetNameList.get(index);
     }
-
+    private int hashShardingValue(final Object shardingValue) {
+        return Math.abs( shardingValue.hashCode());
+    }
     @Override
     public Collection<String> doSharding(Collection<String> collection, RangeShardingValue<String> rangeShardingValue) {
         return collection;

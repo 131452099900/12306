@@ -34,6 +34,7 @@ public class UserTransmitFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("执行拦截器===========================>");
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String userId = httpServletRequest.getHeader(UserConstant.USER_ID_KEY);
         if (StringUtils.hasText(userId)) {

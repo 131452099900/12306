@@ -1,11 +1,10 @@
 
 spring:
   application:
-    name: user-service
+    name: user-provider
   redis:
     jedis:
       pool:
-        enabled: true
         max-active: 100
         max-wait: 2000
         max-idle: 500
@@ -55,14 +54,19 @@ spring:
         username: root
         password: 123456
     sharding:
-      default-database-strategy:
-        standard:
-          sharding-column: username
-          precise-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
-          range-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
+#      default-database-strategy:
+#        standard:
+#          sharding-column: username
+#          precise-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
+#          range-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
       tables:
         t_user:
           actual-data-nodes: master$->{0..1}.t_user_$->{0..31}
+          database-strategy:
+            standard:
+              shardingColumn: username
+              precise-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
+              range-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
           table-strategy:
             standard:
               sharding-column: username
@@ -73,22 +77,37 @@ spring:
           table-strategy:
             standard:
               shardingColumn: username
+              precise-algorithm-class-name: me.xgwd.dao.sharding.ConsistentShardingAlgorithm
+              range-algorithm-class-name: me.xgwd.dao.sharding.ConsistentShardingAlgorithm
+          database-strategy:
+            standard:
+              shardingColumn: username
               precise-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
               range-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
         t_user_mail:
           actual-data-nodes: master$->{0..1}.t_user_mail_$->{0..31}
-          table-strategy:
+          database-strategy:
             standard:
-              shardingColumn: username
+              shardingColumn: mail
               precise-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
               range-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
+          table-strategy:
+            standard:
+              shardingColumn: mail
+              precise-algorithm-class-name: me.xgwd.dao.sharding.ConsistentShardingAlgorithm
+              range-algorithm-class-name: me.xgwd.dao.sharding.ConsistentShardingAlgorithm
         t_user_phone:
           actual-data-nodes: master$->{0..1}.t_user_phone_$->{0..31}
-          table-strategy:
+          database-Strategy:
             standard:
-              shardingColumn: username
+              shardingColumn: phone
               precise-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
               range-algorithm-class-name: me.xgwd.dao.sharding.DataBaseConsistentShardingAlgorithm
+          table-strategy:
+            standard:
+              shardingColumn: phone
+              precise-algorithm-class-name: me.xgwd.dao.sharding.ConsistentShardingAlgorithm
+              range-algorithm-class-name: me.xgwd.dao.sharding.ConsistentShardingAlgorithm
       default-data-source-name: master0
       master-slave-rules:
         master0:
@@ -120,7 +139,7 @@ spring:
 
 dubbo:
   application:
-    name: provider-service
+    name: user-provider
   registry:
     address: nacos://192.168.10.12:8848
     username: nacos
@@ -130,6 +149,10 @@ dubbo:
   protocol:
     name: dubbo
     port: 15511
+  consumer:
+    filter: dubboRpcFilter, test,  -exception
+  provider:
+    filter: dubboRpcFilter, -exception
 
 mybatis-plus:
   global-config:
@@ -155,6 +178,7 @@ framework:
     redis:
       value-timeout: 50000
       bloom-filter:
+        enabled: true
         user-register:
           name: user_register_cache_penetration_bloom_filter${unique-name:}
 

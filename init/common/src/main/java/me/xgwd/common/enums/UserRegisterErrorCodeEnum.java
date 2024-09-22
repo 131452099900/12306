@@ -57,7 +57,7 @@ public enum UserRegisterErrorCodeEnum implements IErrorCode {
     TELEPHONE_NOTNULL("A006013", "固定电话不能为空"),
 
     VERIFY_STATE_NOTNULL("A006014", "审核状态不能为空"),
-
+    USER_NOT_EXISIT("A006016", "用户不存在"),
     REAL_NAME_NOTNULL("A006015", "真实姓名不能为空");
 
     /**

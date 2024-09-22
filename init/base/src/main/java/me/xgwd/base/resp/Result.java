@@ -37,7 +37,7 @@ public class Result<T> implements Serializable {
     /**
      * 请求ID 用作链路追踪
      */
-    private String requestId;
+    private String traceId;
 
     public boolean isSuccess() {
         return SUCCESS_CODE.equals(code);

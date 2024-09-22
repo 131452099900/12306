@@ -6,6 +6,8 @@ import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.xgwd.base.exception.AbstractException;
+import me.xgwd.base.exception.ClientException;
+import me.xgwd.base.exception.ServiceException;
 import me.xgwd.base.resp.BaseErrorCode;
 import me.xgwd.base.resp.Result;
 import me.xgwd.web.res.Results;
@@ -45,6 +47,26 @@ public class GlobalExceptionHandler {
         return Results.failure(BaseErrorCode.CLIENT_ERROR.code(), exceptionStr);
     }
 
+    @ExceptionHandler(value = {ClientException.class})
+    public Result clitenException(HttpServletRequest request, ClientException ex) {
+        System.out.println("===================???>>>>ClientException");
+        if (ex.getCause() != null) {
+            log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString(), ex.getCause());
+            return Results.failure(ex);
+        }
+        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString());
+        return Results.failure(ex);
+    }
+    @ExceptionHandler(value = {ServiceException.class})
+    public Result serviceException(HttpServletRequest request, ServiceException ex) {
+        System.out.println("===================???>>>>ServiceException");
+        if (ex.getCause() != null) {
+            log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString(), ex.getCause());
+            return Results.failure(ex);
+        }
+        log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString());
+        return Results.failure(ex);
+    }
     /**
      * 拦截应用内抛出的异常
      */
@@ -65,6 +87,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Throwable.class)
     public Result defaultErrorHandler(HttpServletRequest request, Throwable throwable) {
         System.out.println("===================???>>>>拦截未捕获异常");
+        System.out.println(throwable.getClass());
         log.error("[{}] {} ", request.getMethod(), getUrl(request), throwable);
         return Results.failure();
     }

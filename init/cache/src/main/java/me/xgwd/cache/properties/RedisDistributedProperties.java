@@ -34,7 +34,7 @@ public class RedisDistributedProperties {
     /**
      * Key 前缀
      */
-    private String prefix = "";
+    private String prefix = "redis-key";
 
     /**
      * Key 前缀字符集

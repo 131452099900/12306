@@ -19,7 +19,6 @@ package me.xgwd.idempotent.core.token;
 
 import cn.hutool.core.util.StrUtil;
 import com.google.common.base.Strings;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.xgwd.base.exception.ClientException;
 import me.xgwd.base.resp.BaseErrorCode;
@@ -32,6 +31,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.UUID;
 

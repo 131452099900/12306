@@ -57,7 +57,7 @@ public final class IdempotentAspect {
      * @return
      * @throws NoSuchMethodException
      */
-    public Idemotent getIdempotent(ProceedingJoinPoint joinPoint) throws NoSuchMethodException {
+    public static Idemotent getIdempotent(ProceedingJoinPoint joinPoint) throws NoSuchMethodException {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method declaredMethod = joinPoint.getTarget().getClass().getDeclaredMethod
                 (signature.getName(), signature.getMethod().getParameterTypes());
