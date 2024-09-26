@@ -23,6 +23,7 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>dubbo-parent</artifactId>

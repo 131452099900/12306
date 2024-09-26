@@ -1,6 +1,7 @@
 package me.xgwd.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -26,6 +27,7 @@ import me.xgwd.cache.DistributedCache;
 import me.xgwd.common.enums.RedisConstant;
 import me.xgwd.common.enums.UserRegisterErrorCodeEnum;
 import me.xgwd.common.util.UserReuseUtil;
+import me.xgwd.user.common.RedisKeyConstant;
 import me.xgwd.user.dao.entity.*;
 import me.xgwd.user.dao.mapper.*;
 import me.xgwd.user.service.UserDeletionDOService;
@@ -42,9 +44,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static me.xgwd.common.enums.RedisConstant.USER_REGISTER_REUSE_SHARDING;
 import static me.xgwd.common.util.UserReuseUtil.hashShardingIdx;
@@ -69,6 +73,8 @@ public class UserServiceImpl implements UserService{
     private final UserReuseMapper userReuseMapper = ApplicationContextHolder.getBean(UserReuseMapper.class);
     private final UserMapper userMapper = ApplicationContextHolder.getBean(UserMapper.class);
     private final UserDeletionMapper userDeletionMapper = ApplicationContextHolder.getBean(UserDeletionMapper.class);
+
+    private final PassengerMapper passengerMapper = ApplicationContextHolder.getBean(PassengerMapper.class);
 
     @Override
     public void test() {
@@ -323,8 +329,40 @@ public class UserServiceImpl implements UserService{
         return Results.success();
     }
 
+    /**
+     * * 获取乘客信息
+     * @param username
+     * @param passengerIds
+     * @return
+     */
+    @Override
+    public Result<List<PassengerRespDTO>> listPassengerQueryByIds(String username, List<String> passengerIds) {
+        // 获取所有用户的所有乘客信息
+        distributedCache.delete(RedisKeyConstant.USER_PASSENGER_LIST + username);
+        String s = distributedCache.safeGet(
+                RedisKeyConstant.USER_PASSENGER_LIST + username,
+                String.class,
+                () -> {
+                    LambdaQueryWrapper<PassengerDO> queryWrapper = Wrappers.lambdaQuery(PassengerDO.class)
+                            .eq(PassengerDO::getUsername, username);
+                    List<PassengerDO> passengerDOList = passengerMapper.selectList(queryWrapper);
+                    System.out.println("passengerDOList is " + passengerDOList);
+                    return CollUtil.isNotEmpty(passengerDOList) ? JSON.toJSONString(passengerDOList) : null;
+                },
+                1,
+                TimeUnit.DAYS
+        );
+        System.out.println(passengerIds);
+        List<PassengerRespDTO> passengerActualRespDTOS = Optional.ofNullable(s).map(item -> JSON.parseArray(item, PassengerDO.class)
+                .stream()
+//                .filter(passengerDO -> passengerIds.contains(passengerDO.getId()))
+                .map(each -> BeanUtil.toBean(each, PassengerRespDTO.class))
+                .collect(Collectors.toList())).orElse(null);
+        System.out.println(passengerActualRespDTOS);
+        return Results.success(passengerActualRespDTOS);
+    }
 
-    @Transactional(rollbackFor = Exception.class)
+
     public void check(UserRegisterReqDTO requestParam){
         String username = requestParam.getUsername();
          // 校验参数

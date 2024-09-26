@@ -18,7 +18,7 @@ import java.util.Map;
 public class OrderCommonTableComplexAlgorithm implements ComplexKeysShardingAlgorithm {
     public static final String USER_ID_FILED = "user_id";
     public static final String ORDER_SN_FILED = "order_sn";
-    private int shardingCount;
+    private int shardingCount = 32;
     @Override
     public Collection<String> doSharding(Collection availableTargetNames, ComplexKeysShardingValue shardingValue) {
         Map<String, Collection<Comparable<Long>>> columnNameAndShardingValuesMap = shardingValue.getColumnNameAndShardingValuesMap();
@@ -34,6 +34,7 @@ public class OrderCommonTableComplexAlgorithm implements ComplexKeysShardingAlgo
             Comparable<?> comparable = customerUserIdCollection.stream().findFirst().get();
             if (comparable instanceof String) {
                 String actualUserId = comparable.toString();
+                System.out.println("userId is ===========> f "+actualUserId);
                 result.add(shardingValue.getLogicTableName() + "_" + hashShardingValue(actualUserId.substring(Math.max(actualUserId.length() - 6, 0))) % shardingCount);
             } else {
                 String dbSuffix = String.valueOf(hashShardingValue((Long) comparable % 1000000) % shardingCount);

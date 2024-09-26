@@ -61,7 +61,7 @@ public class StringRedisTemplateProxy implements DistributedCache {
         if (String.class.isAssignableFrom(clazz)) {
             return (T) value;
         }
-        return JSONUtil.toBean(value, clazz);
+        return Optional.ofNullable(value).map(item -> JSONUtil.toBean(value, clazz)).orElse(null);
     }
 
 

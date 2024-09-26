@@ -25,32 +25,40 @@ public class OrderCommonDataBaseComplexAlgorithm implements ComplexKeysShardingA
     // 分库数量，读取的配置中定义的分库数量
     private int shardingCount = 32;
     private int tableShardingCount = 16;
-    private static final String SHARDING_COUNT_KEY = "sharding-count";
-    public static final String USER_ID_FILED = "user_id";
-    public static final String ORDER_SN_FILED = "order_sn";
     @Override
     public Collection<String> doSharding(Collection availableTargetNames, ComplexKeysShardingValue shardingValue) {
-        Map<String, Collection<Comparable<Long>>> columnNameAndShardingValuesMap = shardingValue.getColumnNameAndShardingValuesMap();
+        Map<String, Collection<Comparable<?>>> columnNameAndShardingValuesMap = shardingValue.getColumnNameAndShardingValuesMap();
         Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
         if (CollUtil.isNotEmpty(columnNameAndShardingValuesMap)) {
-            // 首先判断 SQL 是否包含用户 ID，如果包含直接取用户 ID 后六位
-            Collection<Comparable<Long>> customerUserIdCollection = columnNameAndShardingValuesMap.get(USER_ID_FILED);
-            if (customerUserIdCollection.isEmpty()) {
-                customerUserIdCollection = columnNameAndShardingValuesMap.get(ORDER_SN_FILED);
-            }
-            Comparable<?> comparable = customerUserIdCollection.stream().findFirst().get();
-            String dbSuffix;
-            if (comparable instanceof String) {
-                String actualOrderSn = comparable.toString();
-                dbSuffix = String.valueOf(hashShardingValue(actualOrderSn.substring(Math.max(actualOrderSn.length() - 6, 0))) % shardingCount / tableShardingCount);
+            String userId = "user_id";
+            Collection<Comparable<?>> customerUserIdCollection = columnNameAndShardingValuesMap.get(userId);
+            if (CollUtil.isNotEmpty(customerUserIdCollection)) {
+                String dbSuffix;
+                Comparable<?> comparable = customerUserIdCollection.stream().findFirst().get();
+                if (comparable instanceof String) {
+                    String actualUserId = comparable.toString();
+                    dbSuffix = String.valueOf(hashShardingValue(actualUserId.substring(Math.max(actualUserId.length() - 6, 0))) % shardingCount / tableShardingCount);
+                } else {
+                    dbSuffix = String.valueOf(hashShardingValue((Long) comparable % 1000000) % shardingCount / tableShardingCount);
+                }
+                result.add("master" + dbSuffix);
             } else {
-                dbSuffix = String.valueOf(hashShardingValue((Long) comparable % 1000000) % shardingCount / tableShardingCount);
+                String orderSn = "order_sn";
+                String dbSuffix;
+                Collection<Comparable<?>> orderSnCollection = columnNameAndShardingValuesMap.get(orderSn);
+                Comparable<?> comparable = orderSnCollection.stream().findFirst().get();
+                if (comparable instanceof String) {
+                    String actualOrderSn = comparable.toString();
+                    dbSuffix = String.valueOf(hashShardingValue(actualOrderSn.substring(Math.max(actualOrderSn.length() - 6, 0))) % shardingCount / tableShardingCount);
+                } else {
+                    dbSuffix = String.valueOf(hashShardingValue((Long) comparable % 1000000) % shardingCount / tableShardingCount);
+                }
+                result.add("master" + dbSuffix);
             }
-            result.add("ds_" + dbSuffix);
         }
-        // 返回的是表名，
         return result;
     }
+
 
 
     private long hashShardingValue(final Comparable<?> shardingValue) {

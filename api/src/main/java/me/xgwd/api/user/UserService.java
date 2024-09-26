@@ -3,6 +3,8 @@ package me.xgwd.api.user;
 import me.xgwd.base.resp.Result;
 import me.xgwd.bean.dto.*;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -30,4 +32,6 @@ public interface UserService {
     Result<Void> deletion(UserDeletionReqDTO requestParam);
 
     Result<Void> logout(String accessToken);
+
+    Result<List<PassengerRespDTO>> listPassengerQueryByIds(String username, List<String> passengerIds);
 }

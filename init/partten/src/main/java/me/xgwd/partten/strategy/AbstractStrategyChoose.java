@@ -18,10 +18,13 @@
 package me.xgwd.partten.strategy;
 
 
+import lombok.NoArgsConstructor;
 import me.xgwd.base.ApplicationContextHolder;
 import me.xgwd.base.exception.ServiceException;
 import me.xgwd.base.init.ApplicationInitializingEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -33,6 +36,8 @@ import java.util.regex.Pattern;
  * 策略选择器
  * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：12306）获取项目资料
  */
+@Component
+@NoArgsConstructor
 public class AbstractStrategyChoose implements ApplicationListener<ApplicationInitializingEvent> {
 
     /**

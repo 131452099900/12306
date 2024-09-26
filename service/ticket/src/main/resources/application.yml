@@ -1,0 +1,68 @@
+spring:
+  kafka:
+    bootstrap-servers: 192.168.10.12:9002,192.168.10.15:9002,192.168.10.14:9002
+    consumer:
+      auto-offset-reset: earliest # 最早未被消费消息
+      enable-auto-commit: true # 自动ack
+      auto-commit-interval: 1000
+      group-id: 12306_topic_ticket_group
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: ticket-provider
+  redis:
+    jedis:
+      pool:
+        max-active: 100
+        max-wait: 2000
+        max-idle: 500
+        min-idle: 0
+    cluster:
+      nodes: 192.168.10.12:6379,192.168.10.12:6380,192.168.10.12:6381,192.168.10.14:6379,192.168.10.14:6380,192.168.10.14:6381,192.168.10.15:6379,192.168.10.15:6380,192.168.10.15:6381
+      max-redirects: 5000
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.10.12:3306/12306-ticket?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.12:8848
+        username: nacos
+        password: nacos
+
+dubbo:
+  application:
+    name: ticket-provider
+  registry:
+    address: nacos://192.168.10.12:8848
+    username: nacos
+    password: nacos
+  scan:
+    base-packages: me.xgwd.ticket.service.impl
+  consumer:
+    filter: dubboRpcFilter,  -exception
+  provider:
+    filter: dubboRpcFilter, -exception
+  protocol:
+    name: dubbo
+    port: -1
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+server:
+  port: 7652
+
+# 开启binlog监听日志
+ticket:
+  availability:
+    cache-update:
+      type: binlog

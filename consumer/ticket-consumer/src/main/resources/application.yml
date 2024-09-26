@@ -1,0 +1,35 @@
+dubbo:
+  application:
+    name: ticket-consumer
+  registry:
+    address: nacos://192.168.10.12:8848
+    username: nacos
+    password: nacos
+  scan:
+    base-packages: me.xgwd.api.ticket.service.impl
+  protocol:
+    name: dubbo
+    port: -1
+
+spring:
+  application:
+    name: ticket-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.10.12:8848
+        username: nacos
+        password: nacos
+  redis:
+    jedis:
+      pool:
+        max-active: 100
+        max-wait: 2000
+        max-idle: 500
+        min-idle: 0
+    cluster:
+      nodes: 192.168.10.12:6379,192.168.10.12:6380,192.168.10.12:6381,192.168.10.14:6379,192.168.10.14:6380,192.168.10.14:6381,192.168.10.15:6379,192.168.10.15:6380,192.168.10.15:6381
+      max-redirects: 5000
+  main:
+    allow-bean-definition-overriding: true
+

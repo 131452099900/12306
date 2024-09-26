@@ -21,7 +21,9 @@ public class DataBaseConsistentShardingAlgorithm implements PreciseShardingAlgor
     // 简单路由分片 不满16为0，满16为1
     @Override
     public String doSharding(Collection<String> collection, PreciseShardingValue<String> preciseShardingValue) {
-        int index = hashShardingValue(preciseShardingValue.getValue()) % shardingCount / tableShardingCount;
+        int tableIndex = hashShardingValue(preciseShardingValue.getValue()) % shardingCount;
+        // 0-15在 0  16-31在1
+        int index = tableIndex / tableShardingCount;
         System.out.println("value is " + preciseShardingValue.getValue() + "hashCode is " + index + " and Index is " + index + " db");
 
         return new ArrayList<>(collection).get(index);

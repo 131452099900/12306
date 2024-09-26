@@ -16,7 +16,7 @@ public final class OrderIdGeneratorManager implements InitializingBean {
 
     private final RedissonClient redissonClient;
     private final DistributedCache distributedCache;
-    private static DistributedIdGenerator DISTRIBUTED_ID_GENERATOR;
+    private static OrderDistributedIdGenerator DISTRIBUTED_ID_GENERATOR;
 
     /**
      * 生成订单全局唯一 ID
@@ -43,7 +43,7 @@ public final class OrderIdGeneratorManager implements InitializingBean {
                 incremented = 0;
                 instance.opsForValue().set(DISTRIBUTED_ID_GENERATOR_KEY, "0");
             }
-            DISTRIBUTED_ID_GENERATOR = new DistributedIdGenerator(incremented);
+            DISTRIBUTED_ID_GENERATOR = new OrderDistributedIdGenerator(incremented);
         } finally {
             lock.unlock();
         }

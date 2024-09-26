@@ -14,6 +14,7 @@
     <modules>
         <module>user-consumer</module>
         <module>order-consumer</module>
+        <module>ticket-consumer</module>
     </modules>
 
     <properties>
@@ -38,6 +39,12 @@
             <groupId>org.example</groupId>
             <artifactId>bean</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.example</groupId>
+                    <artifactId>dao</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
